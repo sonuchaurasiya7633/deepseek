@@ -18,7 +18,7 @@ export async function POST(req) {
     const body = JSON.stringify(payload);
     ({ data, type } = wh.verify(body, svixHeaders));
   } catch (error) {
-    console.error("Invalid webhook signature:", error);
+    console.error(" Invalid webhook signature:", error);
     return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 });
   }
 
@@ -31,27 +31,26 @@ export async function POST(req) {
 
   try {
     await ConnectDB();
-    console.log("Connected to MongoDB");
 
     switch (type) {
       case "user.created":
         await User.create(userData);
-        console.log("User created:", userData);
+        console.log(" User created:", userData);
         break;
       case "user.updated":
         await User.findByIdAndUpdate(data.id, userData);
-        console.log("User updated:", userData);
+        console.log("🔄 User updated:", userData);
         break;
       case "user.deleted":
         await User.findByIdAndDelete(data.id);
-        console.log("User deleted:", data.id);
+        console.log(" User deleted:", data.id);
         break;
       default:
-        console.warn("Unhandled event type:", type);
+        console.warn(" Unhandled event type:", type);
         return NextResponse.json({ error: "Unhandled event type" }, { status: 400 });
     }
   } catch (error) {
-    console.error("Database operation failed:", error);
+    console.error(" Database operation failed:", error);
     return NextResponse.json({ error: "Database operation failed" }, { status: 500 });
   }
 
